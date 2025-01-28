@@ -1,4 +1,8 @@
+<?php
 
+echo 'Diamond Catcher';
+
+?>
 
 <!doctype html>
 <html lang="en">
@@ -6,7 +10,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Document</title>
-    <link rel="stylesheet" href="styles.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,18 +17,9 @@
 </head>
 <body>
 
-<H1 class="header" style="display: flex; justify-content: center;" >Diamond Catcher</H1>
 
-<main style="display: flex; justify-content: center;">
-    <canvas id="myCanvas" width="900" height="710"></canvas>
-</main>
-
-</body>
-</html>
-
-
-
-<script src="game.js"></script>
+<script src="p5.js"></script>
+<script src="game2.js"></script>
 
 </body>
 </html>
