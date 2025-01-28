@@ -1,3 +1,5 @@
+
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,16 +11,28 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+
+    <style>
+        #myCanvas{
+            cursor: none;
+        }
+    </style>
 </head>
 <body>
 
-<H1 class="header" style="display: flex; justify-content: center;">Diamond Catcher</H1>
+<H1 class="header" style="display: flex; justify-content: center;" >Diamond Catcher</H1>
 
 <main style="display: flex; justify-content: center;">
     <canvas id="myCanvas" width="900" height="710"></canvas>
 </main>
 
-<script src="index.js"></script>
+
+<script src="mechanics.js"></script>
 
 </body>
 </html>
+
+
+
+
+

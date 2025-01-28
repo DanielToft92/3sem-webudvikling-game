@@ -1,10 +1,15 @@
+<?php
+
+echo 'Diamond Catcher';
+
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Diamond Catcher</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Diamond Crusher</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,13 +17,10 @@
 </head>
 <body>
 
-<H1 class="header" style="display: flex; justify-content: center;">Diamond Catcher</H1>
 
-<main style="display: flex; justify-content: center;">
-    <canvas id="myCanvas" width="900" height="710"></canvas>
-</main>
-
-<script src="index.js"></script>
+<script src="p5.js"></script>
+<script src="mechanics2.js"></script>
 
 </body>
 </html>
+
