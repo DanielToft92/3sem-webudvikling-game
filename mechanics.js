@@ -34,7 +34,7 @@ function createDiamond() {
         size: randomType.size,
         points: randomType.points,
         speed: randomType.baseSpeed,
-        delayTime: Math.random() * 200 // Random delay between 0 to 200 frames
+        delayTime: Math.random() * 200
     };
 }
 
@@ -62,13 +62,12 @@ function updateDiamonds() {
 
     diamonds.forEach(diamond => {
         if (diamond.delayTime > 0) {
-            diamond.delayTime--; // Wait before falling
+            diamond.delayTime--;
             return;
         }
 
         diamond.y += diamond.speed;
 
-        // Check if diamond is caught
         if (diamond.y + diamond.size >= canvas.height - paddle.height - 10 &&
             diamond.x + diamond.size >= paddle.x && diamond.x <= paddle.x + paddle.width) {
             score += diamond.points;
@@ -81,7 +80,7 @@ function updateDiamonds() {
 
 function resetDiamond(diamond) {
     let newDiamond = createDiamond();
-    newDiamond.speed = diamond.speed; // Keep the increased speed
+    newDiamond.speed = diamond.speed; //
     Object.assign(diamond, newDiamond);
 }
 
