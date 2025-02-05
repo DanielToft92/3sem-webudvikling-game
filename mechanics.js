@@ -54,7 +54,6 @@ function drawPaddle() {
 function updateDiamonds() {
     let currentTime = Date.now();
 
-    // Increase speed every 10 seconds
     if (currentTime - lastSpeedIncreaseTime >= 10000) {
         diamonds.forEach(diamond => diamond.speed += 2);
         lastSpeedIncreaseTime = currentTime;
