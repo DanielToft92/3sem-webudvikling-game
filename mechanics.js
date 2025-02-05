@@ -4,56 +4,101 @@ const ctx = canvas.getContext('2d');
 const img = new Image();
 img.src = 'billeder/stordiamant.png';
 
-let xPos = Math.random() * canvas.width;
-let yPos = 0;
-let fallSpeed = 2;
-let increaseRate = 1;
-let lastUpdateTime = Date.now();
+let score = 0;
+let lastSpeedIncreaseTime = Date.now();
 
-const paddleWidth = 100;
-const paddleHeight = 20;
-let paddleX = (canvas.width - paddleWidth) / 2;
+const diamondSizes = [
+    { size: 30, points: 10, baseSpeed: 3 },
+    { size: 50, points: 5, baseSpeed: 2 },
+    { size: 70, points: 2, baseSpeed: 1.5 }
+];
+
+let diamonds = Array.from({ length: 3 }, () => createDiamond());
+
+const paddle = {
+    width: 100,
+    height: 20,
+    x: (canvas.width - 100) / 2,
+};
 
 canvas.addEventListener('mousemove', (event) => {
     const rect = canvas.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
-    paddleX = mouseX - paddleWidth / 2;
-    if (paddleX < 0) paddleX = 0;
-    if (paddleX + paddleWidth > canvas.width) paddleX = canvas.width - paddleWidth;
+    paddle.x = Math.min(Math.max(event.clientX - rect.left - paddle.width / 2, 0), canvas.width - paddle.width);
 });
+
+function createDiamond() {
+    let randomType = diamondSizes[Math.floor(Math.random() * diamondSizes.length)];
+    return {
+        x: Math.random() * (canvas.width - randomType.size),
+        y: 0,
+        size: randomType.size,
+        points: randomType.points,
+        speed: randomType.baseSpeed,
+        delayTime: Math.random() * 200 // Random delay between 0 to 200 frames
+    };
+}
+
+function drawDiamonds() {
+    diamonds.forEach(diamond => {
+        if (diamond.delayTime <= 0 && img.complete) {
+            ctx.drawImage(img, diamond.x, diamond.y, diamond.size, diamond.size);
+        }
+    });
+}
+
+function drawPaddle() {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(paddle.x, canvas.height - paddle.height - 10, paddle.width, paddle.height);
+}
+
+function updateDiamonds() {
+    let currentTime = Date.now();
+
+    // Increase speed every 10 seconds
+    if (currentTime - lastSpeedIncreaseTime >= 10000) {
+        diamonds.forEach(diamond => diamond.speed += 2);
+        lastSpeedIncreaseTime = currentTime;
+    }
+
+    diamonds.forEach(diamond => {
+        if (diamond.delayTime > 0) {
+            diamond.delayTime--; // Wait before falling
+            return;
+        }
+
+        diamond.y += diamond.speed;
+
+        // Check if diamond is caught
+        if (diamond.y + diamond.size >= canvas.height - paddle.height - 10 &&
+            diamond.x + diamond.size >= paddle.x && diamond.x <= paddle.x + paddle.width) {
+            score += diamond.points;
+            resetDiamond(diamond);
+        } else if (diamond.y > canvas.height) {
+            resetDiamond(diamond);
+        }
+    });
+}
+
+function resetDiamond(diamond) {
+    let newDiamond = createDiamond();
+    newDiamond.speed = diamond.speed; // Keep the increased speed
+    Object.assign(diamond, newDiamond);
+}
+
+function drawScore() {
+    ctx.fillStyle = '#000';
+    ctx.font = '20px Arial';
+    ctx.fillText(`Score: ${score}`, 10, 30);
+}
 
 function draw() {
     ctx.fillStyle = '#74CFF6';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    if (img.complete) {
-        ctx.drawImage(img, xPos - 25, yPos - 25, 50, 50);
-    }
-
-    ctx.fillStyle = '#000';
-    ctx.fillRect(paddleX, canvas.height - paddleHeight - 10, paddleWidth, paddleHeight);
-
-    yPos += fallSpeed;
-
-    if (
-        yPos + 25 >= canvas.height - paddleHeight - 10 &&
-        xPos >= paddleX &&
-        xPos <= paddleX + paddleWidth
-    ) {
-        yPos = 0;
-        xPos = Math.random() * canvas.width;/ Randomize X position
-    }
-
-    if (yPos > canvas.height) {
-        yPos = 0;
-        xPos = Math.random() * canvas.width;
-    }
-
-
-    if (Date.now() - lastUpdateTime >= 10000) {
-        fallSpeed += increaseRate;
-        lastUpdateTime = Date.now();
-    }
+    drawDiamonds();
+    drawPaddle();
+    drawScore();
+    updateDiamonds();
 
     requestAnimationFrame(draw);
 }
