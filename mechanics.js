@@ -13,6 +13,14 @@ const diamondSizes = [
     { size: 70, points: 2, baseSpeed: 1.5 }
 ];
 
+const bombSizes = [
+    { size: 30, baseSpeed: 3 },
+    { size: 50, baseSpeed: 2},
+    { size: 70, baseSpeed: 1.5},
+    { size: 90, baseSpeed: 1},
+    { size: 110, baseSpeed: 0.5}
+];
+
 let diamonds = Array.from({ length: 3 }, () => createDiamond());
 
 const paddle = {
@@ -79,7 +87,7 @@ function updateDiamonds() {
 
 function resetDiamond(diamond) {
     let newDiamond = createDiamond();
-    newDiamond.speed = diamond.speed; //
+    newDiamond.speed = diamond.speed;
     Object.assign(diamond, newDiamond);
 }
 
