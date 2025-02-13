@@ -1,16 +1,20 @@
+// Get Canvas and Context
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
+// Load Images
 const img = new Image();
 img.src = 'billeder/stordiamant.png';
 
 const bombImg = new Image();
 bombImg.src = 'billeder/bombe.png';
 
+// Game Variables
 let score = 0;
 let gameOver = false;
 let lastSpeedIncreaseTime = Date.now();
 
+// Diamond and Bomb Properties
 const diamondSizes = [
     { size: 30, points: 10, baseSpeed: 3 },
     { size: 50, points: 5, baseSpeed: 2 },
@@ -22,43 +26,49 @@ const bombSizes = [
     { size: 60, baseSpeed: 2 }
 ];
 
-let diamonds = Array.from({ length: 3 }, () => createDiamond());
-let bombs = Array.from({ length: 2 }, () => createBomb());
-
+// Paddle Properties
 const paddle = {
     width: 100,
     height: 20,
     x: (canvas.width - 100) / 2,
 };
 
+// Event Listener for Paddle Movement
 canvas.addEventListener('mousemove', (event) => {
     const rect = canvas.getBoundingClientRect();
     paddle.x = Math.min(Math.max(event.clientX - rect.left - paddle.width / 2, 0), canvas.width - paddle.width);
 });
 
+// Initialize Diamonds and Bombs
+let diamonds = Array.from({ length: 3 }, createDiamond);
+let bombs = Array.from({ length: 2 }, createBomb);
+
+// Create a Diamond
 function createDiamond() {
-    let randomType = diamondSizes[Math.floor(Math.random() * diamondSizes.length)];
+    let type = diamondSizes[Math.floor(Math.random() * diamondSizes.length)];
     return {
-        x: Math.random() * (canvas.width - randomType.size),
+        x: Math.random() * (canvas.width - type.size),
         y: 0,
-        size: randomType.size,
-        points: randomType.points,
-        speed: randomType.baseSpeed,
+        size: type.size,
+        points: type.points,
+        speed: type.baseSpeed,
         delayTime: Math.random() * 200
     };
 }
 
+// Create a Bomb
 function createBomb() {
-    let randomType = bombSizes[Math.floor(Math.random() * bombSizes.length)];
+    let type = bombSizes[Math.floor(Math.random() * bombSizes.length)];
     return {
-        x: Math.random() * (canvas.width - randomType.size),
+        x: Math.random() * (canvas.width - type.size),
         y: 0,
-        size: randomType.size,
-        speed: randomType.baseSpeed,
+        size: type.size,
+        speed: type.baseSpeed,
         delayTime: Math.random() * 300
     };
 }
 
+// Draw Functions
 function drawDiamonds() {
     diamonds.forEach(diamond => {
         if (diamond.delayTime <= 0 && img.complete) {
@@ -80,6 +90,19 @@ function drawPaddle() {
     ctx.fillRect(paddle.x, canvas.height - paddle.height - 10, paddle.width, paddle.height);
 }
 
+function drawScore() {
+    ctx.fillStyle = '#000';
+    ctx.font = '20px Pixelify Sans';
+    ctx.fillText(`Score: ${score}`, 10, 30);
+}
+
+function drawGameOver() {
+    ctx.fillStyle = 'red';
+    ctx.font = '40px Pixelify Sans';
+    ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
+}
+
+// Update Functions
 function updateDiamonds() {
     let currentTime = Date.now();
 
@@ -94,7 +117,6 @@ function updateDiamonds() {
             diamond.delayTime--;
             return;
         }
-
         diamond.y += diamond.speed;
 
         if (diamond.y + diamond.size >= canvas.height - paddle.height - 10 &&
@@ -113,7 +135,6 @@ function updateBombs() {
             bomb.delayTime--;
             return;
         }
-
         bomb.y += bomb.speed;
 
         if (bomb.y + bomb.size >= canvas.height - paddle.height - 10 &&
@@ -125,30 +146,16 @@ function updateBombs() {
     });
 }
 
+// Reset Functions
 function resetDiamond(diamond) {
-    let newDiamond = createDiamond();
-    newDiamond.speed = diamond.speed;
-    Object.assign(diamond, newDiamond);
+    Object.assign(diamond, createDiamond());
 }
 
 function resetBomb(bomb) {
-    let newBomb = createBomb();
-    newBomb.speed = bomb.speed;
-    Object.assign(bomb, newBomb);
+    Object.assign(bomb, createBomb());
 }
 
-function drawScore() {
-    ctx.fillStyle = '#000';
-    ctx.font = '20px Pixelify Sans';
-    ctx.fillText(`Score: ${score}`, 10, 30);
-}
-
-function drawGameOver() {
-    ctx.fillStyle = 'red';
-    ctx.font = '40px Pixelify Sans';
-    ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
-}
-
+// Game Loop
 function draw() {
     ctx.fillStyle = '#74CFF6';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
