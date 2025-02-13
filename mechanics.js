@@ -5,7 +5,7 @@ const img = new Image();
 img.src = 'billeder/stordiamant.png';
 
 const bombImg = new Image();
-bombImg.src = 'billeder/bombe.png'; // Add an image for bombs
+bombImg.src = 'billeder/bombe.png';
 
 let score = 0;
 let gameOver = false;
