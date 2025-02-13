@@ -4,7 +4,11 @@ const ctx = canvas.getContext('2d');
 const img = new Image();
 img.src = 'billeder/stordiamant.png';
 
+const bombImg = new Image();
+bombImg.src = 'billeder/bombe.png'; // Add an image for bombs
+
 let score = 0;
+let gameOver = false;
 let lastSpeedIncreaseTime = Date.now();
 
 const diamondSizes = [
@@ -14,14 +18,12 @@ const diamondSizes = [
 ];
 
 const bombSizes = [
-    { size: 30, baseSpeed: 3 },
-    { size: 50, baseSpeed: 2},
-    { size: 70, baseSpeed: 1.5},
-    { size: 90, baseSpeed: 1},
-    { size: 110, baseSpeed: 0.5}
+    { size: 40, baseSpeed: 2.5 },
+    { size: 60, baseSpeed: 2 }
 ];
 
 let diamonds = Array.from({ length: 3 }, () => createDiamond());
+let bombs = Array.from({ length: 2 }, () => createBomb());
 
 const paddle = {
     width: 100,
@@ -46,10 +48,29 @@ function createDiamond() {
     };
 }
 
+function createBomb() {
+    let randomType = bombSizes[Math.floor(Math.random() * bombSizes.length)];
+    return {
+        x: Math.random() * (canvas.width - randomType.size),
+        y: 0,
+        size: randomType.size,
+        speed: randomType.baseSpeed,
+        delayTime: Math.random() * 300
+    };
+}
+
 function drawDiamonds() {
     diamonds.forEach(diamond => {
         if (diamond.delayTime <= 0 && img.complete) {
             ctx.drawImage(img, diamond.x, diamond.y, diamond.size, diamond.size);
+        }
+    });
+}
+
+function drawBombs() {
+    bombs.forEach(bomb => {
+        if (bomb.delayTime <= 0 && bombImg.complete) {
+            ctx.drawImage(bombImg, bomb.x, bomb.y, bomb.size, bomb.size);
         }
     });
 }
@@ -64,6 +85,7 @@ function updateDiamonds() {
 
     if (currentTime - lastSpeedIncreaseTime >= 10000) {
         diamonds.forEach(diamond => diamond.speed += 2);
+        bombs.forEach(bomb => bomb.speed += 2);
         lastSpeedIncreaseTime = currentTime;
     }
 
@@ -85,28 +107,63 @@ function updateDiamonds() {
     });
 }
 
+function updateBombs() {
+    bombs.forEach(bomb => {
+        if (bomb.delayTime > 0) {
+            bomb.delayTime--;
+            return;
+        }
+
+        bomb.y += bomb.speed;
+
+        if (bomb.y + bomb.size >= canvas.height - paddle.height - 10 &&
+            bomb.x + bomb.size >= paddle.x && bomb.x <= paddle.x + paddle.width) {
+            gameOver = true;
+        } else if (bomb.y > canvas.height) {
+            resetBomb(bomb);
+        }
+    });
+}
+
 function resetDiamond(diamond) {
     let newDiamond = createDiamond();
     newDiamond.speed = diamond.speed;
     Object.assign(diamond, newDiamond);
 }
 
+function resetBomb(bomb) {
+    let newBomb = createBomb();
+    newBomb.speed = bomb.speed;
+    Object.assign(bomb, newBomb);
+}
+
 function drawScore() {
     ctx.fillStyle = '#000';
-    ctx.font = '20px Arial';
+    ctx.font = '20px Pixelify Sans';
     ctx.fillText(`Score: ${score}`, 10, 30);
+}
+
+function drawGameOver() {
+    ctx.fillStyle = 'red';
+    ctx.font = '40px Pixelify Sans';
+    ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
 }
 
 function draw() {
     ctx.fillStyle = '#74CFF6';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    drawDiamonds();
-    drawPaddle();
-    drawScore();
-    updateDiamonds();
-
-    requestAnimationFrame(draw);
+    if (!gameOver) {
+        drawDiamonds();
+        drawBombs();
+        drawPaddle();
+        drawScore();
+        updateDiamonds();
+        updateBombs();
+        requestAnimationFrame(draw);
+    } else {
+        drawGameOver();
+    }
 }
 
 draw();
