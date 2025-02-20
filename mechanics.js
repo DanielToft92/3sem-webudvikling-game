@@ -99,8 +99,18 @@ function drawScore() {
 function drawGameOver() {
     ctx.fillStyle = 'red';
     ctx.font = '40px Pixelify Sans';
-    ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
+    ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2 - 40);
+
+    ctx.fillStyle = '#000';
+    ctx.font = '30px Pixelify Sans';
+    ctx.fillText(`Final Score: ${score}`, canvas.width / 2 - 100, canvas.height / 2);
+
+    // Draw buttons
+    drawButton('Play Again', canvas.width / 2 - 100, canvas.height / 2 + 50, restartGame);
+    drawButton('Submit High Score', canvas.width / 2 - 100, canvas.height / 2 + 100, submitHighScore);
 }
+
+
 
 // Update Functions
 function updateDiamonds() {

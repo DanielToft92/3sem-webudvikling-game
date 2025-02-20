@@ -9,9 +9,9 @@ function drawBackground() {
 
 
 function drawButton(x, y, width, height, text) {
-    ctx.fillStyle = '#000'; // Sort knapbaggrund
+    ctx.fillStyle = '#000'; //
     ctx.fillRect(x, y, width, height);
-    ctx.fillStyle = '#FFF'; // Hvid tekst
+    ctx.fillStyle = '#FFF'; //
     ctx.font = '20px Pixelify Sans';
     ctx.textAlign = 'center';
     ctx.fillText(text, x + width / 2, y + height / 1.5);
